@@ -1,18 +1,10 @@
 steps:
-  # 1. Image bauen
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
 
-  # 2. Image mit gcloud hochladen (umgeht Docker-Auth-Probleme)
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud auth configure-docker europe-west10-docker.pkg.dev --quiet
-        docker push europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest' ]
 
-  # 3. Deployment auf Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
