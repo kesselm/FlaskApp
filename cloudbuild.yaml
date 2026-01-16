@@ -1,6 +1,13 @@
 steps:
+  # 1. Image bauen
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
+
+  # 2. Image sofort hochladen (damit Cloud Run es finden kann)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest' ]
+
+  # 3. Deployment erst starten, wenn das Image sicher in der Registry ist
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -12,10 +19,6 @@ steps:
       - '--region'
       - 'europe-west10'
       - '--allow-unauthenticated'
-
-# DAS HIER IST ENTSCHEIDEND:
-images:
-  - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
