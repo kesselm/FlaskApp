@@ -1,4 +1,6 @@
 steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['artifacts', 'docker', 'setup', 'europe-west10']
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
   - name: 'gcr.io/cloud-builders/docker'
