@@ -1,14 +1,21 @@
 steps:
-  # 1. Nur bauen (Push passiert automatisch am Ende durch 'images')
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
 
-  # 2. Wir deployen NICHT in diesem Build, sondern nutzen die Cloud Build Automatik.
-  # Um trotzdem zu deployen, nutzen wir einen Trick: Wir fügen das Deployment als
-  # separaten gcloud-Schritt hinzu, aber lassen den Build erst mal das Image hochladen.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest' ]
 
-images:
-  - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'pyflaskapp'
+      - '--image'
+      - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
+      - '--region'
+      - 'europe-west10'
+      - '--allow-unauthenticated'
 
 options:
   logging: CLOUD_LOGGING_ONLY
