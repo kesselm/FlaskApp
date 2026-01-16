@@ -13,6 +13,7 @@ steps:
       - 'europe-west10'
       - '--allow-unauthenticated'
 
+# DAS HIER IST ENTSCHEIDEND:
 images:
   - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
 
