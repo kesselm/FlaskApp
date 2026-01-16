@@ -2,7 +2,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'us-central1/${PROJECT_ID}/my-artifact/test:latest', '.' ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'us-central1/${PROJECT_ID}/my-artifact/test:latest','.' ]
+    args: [ 'push', 'us-central1/${PROJECT_ID}/my-artifact/test:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
