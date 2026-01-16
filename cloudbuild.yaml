@@ -1,3 +1,16 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/${PROJECT_ID}/my-app/test:latest', '.']
+    args: [ 'build', '-t', 'gcr.io/${PROJECT_ID}/my-artifact/test:latest', '.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/${PROJECT_ID}/my-artifact/test:latest','.' ]
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'pyflaskapp'
+      - '--image'
+      - 'gcr.io/${PROJECT_ID}/my-artifact/test:latest'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unathenticated'
