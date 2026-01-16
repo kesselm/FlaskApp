@@ -1,8 +1,8 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
+    args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo-artifact/test:latest', '.' ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest' ]
+    args: [ 'push', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo-artifact/test:latest' ]
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -10,7 +10,7 @@ steps:
       - 'deploy'
       - 'pyflaskapp'
       - '--image'
-      - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
+      - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo-artifact/test:latest'
       - '--region'
       - 'europe-west10'
       - '--allow-unauthenticated'
