@@ -1,13 +1,18 @@
 steps:
-  # Schritt 1: Image bauen
+  # 1. Image bauen
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest', '.' ]
 
-  # Schritt 2: Cloud Run Deployment
-  # WICHTIG: Wir nutzen hier 'wait_for', um sicherzustellen, dass dieser Schritt erst
-  # ausgeführt wird, wenn das Image (durch das 'images' Feld unten) hochgeladen wurde.
-  # Aber Cloud Build lädt 'images' erst am GANZ EN ENDE hoch.
-  # Daher tricksen wir: Wir nutzen gcloud zum Deployen, aber lassen Cloud Build den Push machen.
+  # 2. Image mit gcloud hochladen (umgeht Docker-Auth-Probleme)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud auth configure-docker europe-west10-docker.pkg.dev --quiet
+        docker push europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest
+
+  # 3. Deployment auf Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -19,11 +24,6 @@ steps:
       - '--region'
       - 'europe-west10'
       - '--allow-unauthenticated'
-
-# Durch dieses Feld übernimmt Cloud Build das Hochladen mit seinen eigenen System-Rechten,
-# was oft IAM-Probleme des Docker-Daemons umgeht.
-images:
-  - 'europe-west10-docker.pkg.dev/${PROJECT_ID}/pyapprepo/test:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
